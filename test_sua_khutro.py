@@ -7,7 +7,7 @@ if __name__ == '__main__':
     driver = webdriver.Chrome()
 
     # đọc file testcase
-    testcase_login = load_workbook("testcase/add_dich_vu.xlsx")
+    testcase_login = load_workbook("testcase/edit_khu_tro.xlsx")
     sheet = testcase_login['Sheet1']
     data = list(sheet.values)
     data.pop(0)
@@ -18,7 +18,7 @@ if __name__ == '__main__':
         try:
             check_pass = True
             # truy cập vào website
-            driver.get("http://localhost/quanlyphongtro/admin/views/listservices/")
+            driver.get("http://localhost/quanlyphongtro/admin/views/buildings")
             time.sleep(1)
 
             # kiểm tra nếu bị chuyển về trang đăng nhập thì tức là cần phải đăng nhập
@@ -33,18 +33,20 @@ if __name__ == '__main__':
                 input_password.send_keys("12345")
                 button_login.click()
                 time.sleep(1)
-                # vào lại trang quản lý dịch vụ sau khi đăng nhập
-                driver.get("http://localhost/quanlyphongtro/admin/views/listservices/")
+                # vào lại trang quản lý khu trọ sau khi đăng nhập
+                driver.get("http://localhost/quanlyphongtro/admin/views/buildings")
 
-            # lấy nút thêm dịch vụ
-            button_add = driver.find_element_by_css_selector("button.themmoi")
+            # lấy nút sửa
+            button_add = driver.find_element_by_css_selector("button.suakhutro")
             button_add.click()
             time.sleep(1)
-            # lấy input thông tin dịch vụ
-            input_name = driver.find_element_by_id("tendichvu")
-            input_price = driver.find_element_by_id("dongia")
-            input_donvi = driver.find_element_by_id("donvi")
-            input_desc = driver.find_element_by_id("mota")
+            # lấy input thông tin khu trọ
+            input_name = driver.find_element_by_id("tenkhu_sua")
+            input_name.clear()
+            input_address = driver.find_element_by_id("diachi_sua")
+            input_address.clear()
+            input_des = driver.find_element_by_id("mota_sua")
+            input_des.clear()
 
             # nhập các testcase
             if row[1]:
@@ -52,30 +54,22 @@ if __name__ == '__main__':
             else:
                 input_name.send_keys("")
             if row[2]:
-                input_price.send_keys(row[2])
+                input_address.send_keys(row[2])
             else:
-                input_price.send_keys("")
+                input_address.send_keys("")
             if row[3]:
-                input_donvi.send_keys(row[3])
+                input_des.send_keys(row[3])
             else:
-                input_donvi.send_keys("")
-            if row[4]:
-                input_desc.send_keys(row[4])
-            else:
-                input_desc.send_keys("")
+                input_des.send_keys("")
 
-            # lấy nút lưu dịch vụ
-            button_save = driver.find_element_by_css_selector("button#luudv")
+            # lấy nút lưu khu trọ
+            button_save = driver.find_element_by_css_selector("button#sualuukt")
             button_save.click()
             time.sleep(1)
-
             # lấy message thông báo
-            message = driver.find_element_by_css_selector(".thongbaoloi")
+            message = driver.find_element_by_css_selector("#suakhutro .thongbaoloi")
             if message.text == "":
-                try:
-                    message = driver.find_element_by_css_selector(".saidinhdang2")
-                except:
-                    message = driver.find_element_by_css_selector(".thongbao:last-child")
+                message = driver.find_element_by_css_selector(".thongbao:last-child")
             message = message.text
             if str(message) == str(row[5]):
                 testcase_pass += 1
@@ -93,3 +87,5 @@ if __name__ == '__main__':
     print("Total: %s" % len(data))
     print("#Pass: %s" % testcase_pass)
     print("#Fail: %s" % testcase_fail)
+
+
